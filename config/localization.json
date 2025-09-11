@@ -1,0 +1,24 @@
+{
+  "project": {
+    "name": "DynamoLocalization",
+    "version": "1.0.0",
+    "description": "Test Dynamo localization process, specifically the replacement of html files"
+  },
+  "localization": {
+    "sourceDir": "src",
+    "outputDir": "build",
+    "localesDir": "locales",
+    "defaultLocale": "en",
+    "supportedLocales": ["en", "es", "fr", "de"],
+    "templateEngine": "mustache",
+    "filePatterns": {
+      "html": "**/*.html",
+      "assets": "**/*.{css,js,png,jpg,jpeg,gif,svg}"
+    }
+  },
+  "replacement": {
+    "tokenPattern": "{{([A-Z_]+)}}",
+    "preserveFormatting": true,
+    "fallbackToDefault": true
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "TITLE": "Dynamo Lokalisierung Demo",
+  "HEADER_TITLE": "Willkommen bei Dynamo",
+  "NAV_HOME": "Startseite",
+  "NAV_ABOUT": "Über uns",
+  "NAV_CONTACT": "Kontakt",
+  "HOME_SECTION_TITLE": "Startseite Bereich",
+  "HOME_DESCRIPTION": "Dies ist der Startseite-Bereich unserer Lokalisierungs-Demo. Dieser Inhalt wird während des Lokalisierungsprozesses ersetzt.",
+  "ABOUT_SECTION_TITLE": "Über uns Bereich",
+  "ABOUT_DESCRIPTION": "Erfahren Sie mehr über unser Dynamo Lokalisierungsprojekt und wie wir den Austausch von HTML-Dateien handhaben.",
+  "CONTACT_SECTION_TITLE": "Kontakt Bereich",
+  "CONTACT_DESCRIPTION": "Kontaktieren Sie uns für weitere Informationen über Lokalisierungsdienste.",
+  "FOOTER_TEXT": "© 2024 Dynamo Lokalisierung Demo. Alle Rechte vorbehalten."
+}

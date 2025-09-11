@@ -1,0 +1,14 @@
+{
+  "TITLE": "Dynamo Localization Demo",
+  "HEADER_TITLE": "Welcome to Dynamo",
+  "NAV_HOME": "Home",
+  "NAV_ABOUT": "About",
+  "NAV_CONTACT": "Contact",
+  "HOME_SECTION_TITLE": "Home Section",
+  "HOME_DESCRIPTION": "This is the home section of our localization demo. This content will be replaced during the localization process.",
+  "ABOUT_SECTION_TITLE": "About Section",
+  "ABOUT_DESCRIPTION": "Learn more about our Dynamo localization project and how we handle HTML file replacement.",
+  "CONTACT_SECTION_TITLE": "Contact Section",
+  "CONTACT_DESCRIPTION": "Get in touch with us for more information about localization services.",
+  "FOOTER_TEXT": "© 2024 Dynamo Localization Demo. All rights reserved."
+}
