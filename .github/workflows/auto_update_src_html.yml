@@ -3,7 +3,7 @@ name: Run on PR merged with folder changes
 on:
   pull_request:
     types:
-      - closed
+      - [closed]
     branches:
       - main   # target branch of the PR
     paths:
@@ -13,9 +13,6 @@ jobs:
   run-on-merge:
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
-    
-    permissions:
-      contents: write   # allow pushing changes
 
     steps:
       - name: Checkout repository
