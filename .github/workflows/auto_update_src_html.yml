@@ -61,11 +61,15 @@ jobs:
                   ["find", "src", "-type", "f", "-name", os.path.basename(f)],
                   capture_output=True, text=True
               )
-              paths = result.stdout.strip().split("\n")
-              if paths and paths[0]:
-                  file_map[os.path.basename(f)] = paths[0]
+              paths = [p for p in result.stdout.strip().split("\n") if p]
+
+              # Filter for paths containing "en-US"
+              en_us_paths = [p for p in paths if "en-US" in p]
+
+              if en_us_paths:
+                  file_map[filename] = en_us_paths[0]  # Take the first match that contains en-US
               else:
-                  print(f"⚠️ File {f} not found in src/!")
+                  print(f"⚠️ File {filename} not found in src/ with 'en-US' in the path!")
 
           print("File map:", file_map)
 
