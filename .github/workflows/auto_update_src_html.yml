@@ -21,3 +21,27 @@ jobs:
       - name: Run custom script
         run: |
           echo "✅ PR was merged and affected files in doc/distrib/html/ or its subfolders"
+          
+      - name: Detect changed HTML files in doc/distrib/html
+        id: changes
+        run: |
+          # Get changed HTML files under doc/distrib/html/
+          CHANGED_FILES=$(git diff --name-only HEAD~1 HEAD | grep '^doc/distrib/html/.*\.html$' || true)
+
+          echo "Changed HTML files:"
+          echo "$CHANGED_FILES"
+
+          echo "changed_files<<EOF" >> $GITHUB_OUTPUT
+          echo "$CHANGED_FILES" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Copy updated HTML files to src/ (preserve structure)
+        run: |
+          updated=false
+          for file in ${{ steps.changes.outputs.changed_files }}; do
+            rel_path=${file#doc/distrib/html/}   # strip leading path
+            dest="src/$rel_path"
+            echo "Copying $file -> $dest"
+            updated=true
+          done
+          echo "updated=$updated" >> $GITHUB_ENV
