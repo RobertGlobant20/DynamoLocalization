@@ -103,7 +103,7 @@ jobs:
                   print(f"Copied {src_path} -> {dest_path}")
               else:
                   print(f"⚠️ File '{filename}' not found in file_map")
-          shell: python
-          env:
-            FILE_MAP: ${{ steps.map_files.outputs.file_map }}        # JSON dictionary
-            CHANGED_FILES: ${{ steps.get_changed_files.outputs.files }} # newline-separated list
+        shell: python
+        env:
+          FILE_MAP: ${{ steps.map_files.outputs.file_map }}        # JSON dictionary
+          CHANGED_FILES: ${{ steps.get_changed_files.outputs.files }} # newline-separated list
