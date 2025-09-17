@@ -118,12 +118,21 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          set -e
+          
+          # Generate unique branch name using timestamp
+          BRANCH="auto-update-$(date +%s)"
+          BASE_BRANCH="main"
+
+          # Configure Git
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git checkout -b update-branch
+          
+          # Create new branch
+          git checkout -b $BRANCH
           git add .
           git commit -m "Automated changes"
-          git push -u origin update-branch
+          git push -u origin $BRANCH
 
       # Create PR using GitHub CLI
       - name: Create Pull Request
