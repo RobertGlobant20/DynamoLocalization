@@ -7,7 +7,7 @@ on:
     branches:
       - main   # target branch of the PR
     paths:
-      - doc/distrib/html/*/**"   # matches any subfolder inside projects/
+      - doc/distrib/html/en-US/Controls/**"   # matches any subfolder inside projects/
 
 jobs:
   run-on-merge:
