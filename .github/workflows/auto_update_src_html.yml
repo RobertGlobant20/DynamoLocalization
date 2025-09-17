@@ -72,7 +72,8 @@ jobs:
           # Save dictionary as JSON in GitHub Actions output
           with open(os.environ['GITHUB_OUTPUT'], "a") as gh_out:
               gh_out.write(f"file_map={json.dumps(file_map)}\n")
-
+              
+        shell: python
         env:
           CHANGED_FILES: ${{ steps.changes.outputs.changed_files }}
 
