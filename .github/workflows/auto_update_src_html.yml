@@ -17,6 +17,8 @@ jobs:
   run-on-merge:
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
+    env:
+      MAIN_BRANCH: main   # You can change this or set it dynamically
 
     steps:
       - name: Checkout repository
@@ -122,7 +124,7 @@ jobs:
           
           # Generate unique branch name using timestamp
           BRANCH="auto-update-$(date +%s)"
-          BASE_BRANCH="main"
+          echo "branch=$BRANCH" >> $GITHUB_OUTPUT
 
           # Configure Git
           git config user.name "github-actions[bot]"
@@ -139,7 +141,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          # Get the branch name from previous step
+          BRANCH="${{ steps.changes.outputs.branch }}"
+          
           gh pr create --title "Automated Update" \
                        --body "This PR contains automated changes" \
-                       --base main \
-                       --head update-branch
+                       --base $MAIN_BRANCH \
+                       --head $BRANCH
