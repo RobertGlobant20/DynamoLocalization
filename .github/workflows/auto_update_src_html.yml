@@ -56,9 +56,11 @@ jobs:
           file_map = {}
 
           for f in files:
+              filename = os.path.basename(f)
+
               # Only search inside src/
               result = subprocess.run(
-                  ["find", "src", "-type", "f", "-name", os.path.basename(f)],
+                  ["find", "src", "-type", "f", "-name", filename],
                   capture_output=True, text=True
               )
               paths = [p for p in result.stdout.strip().split("\n") if p]
