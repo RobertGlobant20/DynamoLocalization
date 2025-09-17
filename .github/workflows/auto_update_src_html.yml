@@ -99,7 +99,8 @@ jobs:
               if filename in file_map:
                   src_path = f
                   dest_path = os.path.join(file_map[filename], filename)
-
+                  # Copy the file to destination
+                  shutil.copy2(src_path, dest_path)
                   print(f"Copied {src_path} -> {dest_path}")
               else:
                   print(f"⚠️ File '{filename}' not found in file_map")
@@ -107,3 +108,24 @@ jobs:
         env:
           FILE_MAP: ${{ steps.map_files.outputs.file_map }}        # JSON dictionary
           CHANGED_FILES: ${{ steps.changes.outputs.changed_files }} # newline-separated list
+          
+      #Commit and push changes
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout -b update-branch
+          git add .
+          git commit -m "Automated changes"
+          git push -u origin update-branch
+
+      # Create PR using GitHub CLI
+      - name: Create Pull Request
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo $GITHUB_TOKEN | gh auth login --with-token
+          gh pr create --title "Automated Update" \
+                       --body "This PR contains automated changes" \
+                       --base main \
+                       --head update-branch
