@@ -106,4 +106,4 @@ jobs:
         shell: python
         env:
           FILE_MAP: ${{ steps.map_files.outputs.file_map }}        # JSON dictionary
-          CHANGED_FILES: ${{ steps.get_changed_files.outputs.files }} # newline-separated list
+          CHANGED_FILES: ${{ steps.changes.outputs.changed_files }} # newline-separated list
