@@ -130,7 +130,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo $GITHUB_TOKEN | gh auth login --with-token
+          gh auth login --with-token <<< $GITHUB_TOKEN
           gh pr create --title "Automated Update" \
                        --body "This PR contains automated changes" \
                        --base main \
