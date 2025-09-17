@@ -19,10 +19,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0   # fetches all commits
-
-      - name: Run custom script
-        run: |
-          echo "✅ PR was merged and affected files in doc/distrib/html/ or its subfolders"
           
       - name: Detect changed HTML files in doc/distrib/html
         id: changes
@@ -69,7 +65,7 @@ jobs:
               en_us_paths = [p for p in paths if "en-US" in p]
 
               if en_us_paths:
-                  file_map[filename] = en_us_paths[0]  # Take the first match that contains en-US
+                  file_map[filename] = os.path.dirname(en_us_paths[0])  # Take the first match that contains en-US
               else:
                   print(f"⚠️ File {filename} not found in src/ with 'en-US' in the path!")
 
@@ -83,13 +79,31 @@ jobs:
         env:
           CHANGED_FILES: ${{ steps.changes.outputs.changed_files }}
 
-      - name: Copy updated HTML files to src/ (preserve structure)
+      - name: Overwrite files based on changed_files and file_map
         run: |
-          updated=false
-          for file in ${{ steps.changes.outputs.changed_files }}; do
-            rel_path=${file#doc/distrib/html/}   # strip leading path
-            dest="src/$rel_path"
-            echo "Copying $file -> $dest"
-            updated=true
-          done
-          echo "updated=$updated" >> $GITHUB_ENV
+          import os
+          import json
+          import shutil
+
+          # 1️⃣ Get dictionary from previous step output
+          file_map_json = os.environ.get("FILE_MAP", "{}")
+          file_map = json.loads(file_map_json)
+
+          # 2️⃣ Get newline-separated list of changed files from previous step
+          changed_files_str = os.environ.get("CHANGED_FILES", "")
+          changed_files = [f for f in changed_files_str.strip().split("\n") if f]
+
+          # 4️⃣ Iterate over changed files
+          for f in changed_files:
+              filename = os.path.basename(f)  # Use filename as key
+              if filename in file_map:
+                  src_path = f
+                  dest_path = os.path.join(file_map[filename], filename)
+
+                  print(f"Copied {src_path} -> {dest_path}")
+              else:
+                  print(f"⚠️ File '{filename}' not found in file_map")
+
+          env:
+            FILE_MAP: ${{ steps.map_files.outputs.file_map }}        # JSON dictionary
+            CHANGED_FILES: ${{ steps.get_changed_files.outputs.files }} # newline-separated list
