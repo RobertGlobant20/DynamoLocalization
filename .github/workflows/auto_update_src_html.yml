@@ -1,0 +1,49 @@
+name: Run on PR merged with folder changes
+
+on:
+  pull_request:
+    types:
+      - closed
+    branches:
+      - main   # target branch of the PR
+    paths:
+      - doc/distrib/html/*/**"   # matches any subfolder inside projects/
+
+jobs:
+  run-on-merge:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: write   # allow pushing changes
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # full history to detect changes
+
+      - name: Detect changed HTML files in doc/distrib/html
+        id: changes
+        run: |
+          # Get changed HTML files under doc/distrib/html/
+          CHANGED_FILES=$(git diff --name-only HEAD~1 HEAD | grep '^doc/distrib/html/.*\.html$' || true)
+
+          echo "Changed HTML files:"
+          echo "$CHANGED_FILES"
+
+          echo "changed_files<<EOF" >> $GITHUB_OUTPUT
+          echo "$CHANGED_FILES" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+          
+      - name: Copy updated HTML files to src/ (preserve structure)
+        run: |
+          updated=false
+          for file in ${{ steps.changes.outputs.changed_files }}; do
+            rel_path=${file#doc/distrib/html/}   # strip leading path
+            dest="src/$rel_path"
+            echo "Copying $file -> $dest"
+            mkdir -p "$(dirname "$dest")"
+            updated=true
+          done
+          echo "updated=$updated" >> $GITHUB_ENV
