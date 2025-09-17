@@ -8,6 +8,10 @@ on:
       - main   # target branch of the PR
     paths:
       - "doc/distrib/html/*/**"   # matches any subfolder inside projects/
+      
+permissions:
+  contents: write          # Allows reading/writing repository files
+  pull-requests: write     # Allows creating/updating pull requests
 
 jobs:
   run-on-merge:
@@ -111,6 +115,8 @@ jobs:
           
       #Commit and push changes
       - name: Commit changes
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
