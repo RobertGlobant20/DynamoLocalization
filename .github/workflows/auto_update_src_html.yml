@@ -117,6 +117,7 @@ jobs:
           
       #Commit and push changes
       - name: Commit changes
+        id: changes
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
