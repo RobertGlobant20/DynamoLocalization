@@ -3,7 +3,7 @@ name: Run on PR merged with folder changes
 on:
   pull_request:
     types:
-      - [closed]
+      - closed
     branches:
       - main   # target branch of the PR
     paths:
