@@ -120,11 +120,21 @@ jobs:
           FILE_MAP: ${{ steps.map_files.outputs.file_map }}        # JSON dictionary
           CHANGED_FILES: ${{ steps.changes.outputs.changed_files }} # newline-separated list
           
+      - name: Check for changes
+        id: git-check
+        run: |
+          if [[ -n "$(git status --porcelain)" ]]; then
+            echo "changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "changed=false" >> $GITHUB_OUTPUT
+          fi
+          
       #Commit and push changes
       - name: Commit changes
         id: commit
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        if: steps.git-check.outputs.changed == 'true'
         run: |
           set -e
           
@@ -146,6 +156,7 @@ jobs:
       - name: Create Pull Request
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        if: steps.git-check.outputs.changed == 'true'
         run: |
           # Get the branch name from previous step
           BRANCH="${{ steps.commit.outputs.branch }}"
