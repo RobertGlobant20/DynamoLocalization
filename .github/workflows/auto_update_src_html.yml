@@ -46,6 +46,7 @@ jobs:
           import os
           import subprocess
           import json
+          import glob
 
           # Get list of changed files from previous step
           changed_files = os.environ.get("CHANGED_FILES", "")
@@ -56,25 +57,35 @@ jobs:
           files = changed_files.split()  # split by space
 
           file_map = {}
+          langs_path = "doc/distrib/html" 
+          lang_dirs = []
+          
+          #Creates a list containing all the languages supported
+          for item in os.listdir(langs_path):
+              item_path = os.path.join(langs_path, item)
+              if os.path.isdir(item_path):
+                  lang_dirs.append(item)
+          
+          print("Languages:", lang_dirs)
 
           for f in files:
               # Get the filename with extension (without full path)
               filename = os.path.basename(f)
 
+              # Get the language of the current file
+              lang_match = [p for p in lang_dirs if p in f][0]
+  
               # Only search inside src/
-              result = subprocess.run(
-                  ["find", "src", "-type", "f", "-name", filename],
-                  capture_output=True, text=True
-              )
-              paths = [p for p in result.stdout.strip().split("\n") if p]
+              search_pattern = os.path.join("src", "**", filename)
+              paths = glob.glob(search_pattern, recursive=True)
 
-              # Filter for paths containing "en-US"
-              en_us_paths = [p for p in paths if "en-US" in p]
+              # Filter for paths containing the specific language in file
+              lang_paths = [p for p in paths if lang_match in p]
 
-              if en_us_paths:
-                  file_map[filename] = os.path.dirname(en_us_paths[0])  # Take the first match that contains en-US
+              if lang_paths:
+                  file_map.append((f, lang_paths[0]))
               else:
-                  print(f"⚠️ File {filename} not found in src/ with 'en-US' in the path!")
+                  print(f"⚠️ File {filename} not found in src/ with " + lang_match + " in the path!")
 
           print("File map:", file_map)
 
@@ -96,21 +107,14 @@ jobs:
           file_map_json = os.environ.get("FILE_MAP", "{}")
           file_map = json.loads(file_map_json)
 
-          # Get newline-separated list of changed files from previous step
-          changed_files_str = os.environ.get("CHANGED_FILES", "")
-          changed_files = [f for f in changed_files_str.strip().split("\n") if f]
-
           # Iterate over changed files
-          for f in changed_files:
-              filename = os.path.basename(f)  
-              if filename in file_map:
-                  src_path = f
-                  dest_path = os.path.join(file_map[filename], filename) # Use filename as key
-                  # Copy the file to destination
-                  shutil.copy2(src_path, dest_path)
-                  print(f"Copied {src_path} -> {dest_path}")
-              else:
-                  print(f"⚠️ File '{filename}' not found in file_map")
+          for f in file_map:
+              src_path = f[0]
+              dest_path = f[1]
+              # Copy the file to destination
+              shutil.copy2(src_path, dest_path)
+              print(f"Copied {src_path} -> {dest_path}")
+              
         shell: python
         env:
           FILE_MAP: ${{ steps.map_files.outputs.file_map }}        # JSON dictionary
