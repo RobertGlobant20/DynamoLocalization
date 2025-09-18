@@ -56,7 +56,7 @@ jobs:
 
           files = changed_files.split()  # split by space
 
-          file_map = {}
+          file_map = []
           langs_path = "doc/distrib/html" 
           lang_dirs = []
           
