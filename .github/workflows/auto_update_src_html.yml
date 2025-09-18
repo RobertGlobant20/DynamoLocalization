@@ -1,4 +1,4 @@
-name: Run on PR merged with folder changes
+name: Run on doc/distrib/html changes
 
 on:
   pull_request:
@@ -7,7 +7,7 @@ on:
     branches:
       - main   # target branch of the PR
     paths:
-      - "doc/distrib/html/*/**"   # matches any subfolder inside projects/
+      - "doc/distrib/html/*/**"   # matches any subfolder changes inside doc/distrib/html/
       
 permissions:
   contents: write          # Allows reading/writing repository files
@@ -39,7 +39,7 @@ jobs:
           echo "$CHANGED_FILES" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
           
-      # 2️⃣ Map files in src/ to full paths
+      # Map files in src/ to full paths
       - name: Map changed files to full paths in src/
         id: map_files
         run: |
@@ -58,6 +58,7 @@ jobs:
           file_map = {}
 
           for f in files:
+              # Get the filename with extension (without full path)
               filename = os.path.basename(f)
 
               # Only search inside src/
@@ -91,20 +92,20 @@ jobs:
           import json
           import shutil
 
-          # 1️⃣ Get dictionary from previous step output
+          # Get dictionary from previous step output
           file_map_json = os.environ.get("FILE_MAP", "{}")
           file_map = json.loads(file_map_json)
 
-          # 2️⃣ Get newline-separated list of changed files from previous step
+          # Get newline-separated list of changed files from previous step
           changed_files_str = os.environ.get("CHANGED_FILES", "")
           changed_files = [f for f in changed_files_str.strip().split("\n") if f]
 
-          # 4️⃣ Iterate over changed files
+          # Iterate over changed files
           for f in changed_files:
-              filename = os.path.basename(f)  # Use filename as key
+              filename = os.path.basename(f)  
               if filename in file_map:
                   src_path = f
-                  dest_path = os.path.join(file_map[filename], filename)
+                  dest_path = os.path.join(file_map[filename], filename) # Use filename as key
                   # Copy the file to destination
                   shutil.copy2(src_path, dest_path)
                   print(f"Copied {src_path} -> {dest_path}")
