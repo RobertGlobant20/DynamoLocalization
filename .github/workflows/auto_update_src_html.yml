@@ -1,4 +1,4 @@
-name: Run on doc/distrib/html changes
+name: Update HTML Documents
 
 on:
   pull_request:
@@ -30,7 +30,7 @@ jobs:
         id: changes
         run: |
           # Get changed HTML files under doc/distrib/html/
-          CHANGED_FILES=$(git diff --name-only HEAD~1 HEAD | grep '^doc/distrib/html/.*\.html$' || true)
+          CHANGED_FILES=$(git diff --name-only "${{ github.event.pull_request.base.sha }}" "${{ github.event.pull_request.merge_commit_sha }}" | grep '^doc/distrib/html/.*\.html$' || true)
 
           echo "Changed HTML files:"
           echo "$CHANGED_FILES"
@@ -50,12 +50,11 @@ jobs:
 
           # Get list of changed files from previous step
           changed_files = os.environ.get("CHANGED_FILES", "")
-          if not changed_files:
+          if not changed_files.strip():
               print("No files provided in CHANGED_FILES")
-              changed_files = []
-
-          files = changed_files.split()  # split by space
-
+              files = []
+          else:
+              files = changed_files.split()  # split by space
           file_map = []
           langs_path = "doc/distrib/html" 
           lang_dirs = []
@@ -73,7 +72,11 @@ jobs:
               filename = os.path.basename(f)
 
               # Get the language of the current file
-              lang_match = [p for p in lang_dirs if p in f][0]
+              matches = [p for p in lang_dirs if p in f]
+              if not matches:
+                  print(f"No language match found for {f}, skipping.")
+                  continue
+              lang_match = matches[0]
   
               # Only search inside src/
               search_pattern = os.path.join("src", "**", filename)
@@ -148,7 +151,7 @@ jobs:
           
           # Create new branch
           git checkout -b $BRANCH
-          git add .
+          git add src/**/*.html
           git commit -m "Automated changes"
           git push -u origin $BRANCH
 
