@@ -159,7 +159,7 @@ jobs:
         uses: peter-evans/create-pull-request@v7
         with:
           token: ${{ secrets.GH_TOKEN_BOT }}
-          branch: $BRANCH
+          branch: ${{ steps.create_branch.outputs.branch }}
           base: ${{ env.MAIN_BRANCH }}
-          title: "Documentation Automated PR from branch ${{ env.BRANCH }}"
+          title: "Documentation Automated PR from branch ${{ steps.create_branch.outputs.branch }}"
           body: "This PR contains automated changes generated due to changes in doc/distrib/html subfolders"
