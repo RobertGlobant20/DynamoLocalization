@@ -170,5 +170,6 @@ jobs:
         with:
           token: ${{ secrets.GH_TOKEN_BOT }}
           branch: ${{ env.BRANCH }}
+          base: master
           title: "Documentation Automated PR from branch ${{ env.BRANCH }}"
           body: "This PR contains automated changes generated due to changes in doc/distrib/html subfolders"
