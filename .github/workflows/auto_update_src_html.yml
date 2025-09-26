@@ -153,14 +153,6 @@ jobs:
           git checkout -b $BRANCH
           git add src/**/*.html
           git commit -m "Automated changes"
-          
-      - name: Push changes
-        if: steps.git-check.outputs.changed == 'true'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN_BOT }}
-        run: |
-          # Push HEAD to the new branch on remote
-          git push origin HEAD:$BRANCH
 
       - name: Create Pull Request
         if: steps.git-check.outputs.changed == 'true'
