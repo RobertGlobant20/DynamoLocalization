@@ -153,18 +153,22 @@ jobs:
           git checkout -b $BRANCH
           git add src/**/*.html
           git commit -m "Automated changes"
-          git push -u origin $BRANCH
-
-      # Create PR using GitHub CLI
-      - name: Create Pull Request
+          
+      - name: Push changes
+        if: steps.git-check.outputs.changed == 'true'
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN_BOT }}
-        if: steps.git-check.outputs.changed == 'true'
+          BRANCH: ${{ steps.commit.outputs.branch }}
         run: |
-          # Get the branch name from previous step
-          BRANCH="${{ steps.commit.outputs.branch }}"
-          
-          gh pr create --title "Documentation Automated Update" \
-                       --body "This PR contains automated changes generated due to changes in doc/distrib/html subfolders" \
-                       --base $MAIN_BRANCH \
-                       --head $BRANCH
+          git push https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }} HEAD:$BRANCH
+
+      - name: Create Pull Request
+        if: steps.git-check.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@v5
+        env:
+          BRANCH: ${{ steps.commit.outputs.branch }}
+        with:
+          token: ${{ secrets.GH_TOKEN_BOT }}
+          branch: ${{ env.BRANCH }}
+          title: "Documentation Automated PR from branch ${{ env.BRANCH }}"
+          body: "This PR contains automated changes generated due to changes in doc/distrib/html subfolders"
