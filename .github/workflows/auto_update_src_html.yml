@@ -157,11 +157,11 @@ jobs:
       - name: Push changes
         if: steps.git-check.outputs.changed == 'true'
         env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN_BOT }}
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN_BOT }}
           BRANCH: ${{ steps.commit.outputs.branch }}
         run: |
           # Push HEAD to the new branch on remote
-          git push https://x-access-token:${{ secrets.GH_TOKEN }}@github.com/${{ github.repository }} HEAD:$BRANCH
+          git push origin HEAD:$BRANCH
 
       - name: Create Pull Request
         if: steps.git-check.outputs.changed == 'true'
