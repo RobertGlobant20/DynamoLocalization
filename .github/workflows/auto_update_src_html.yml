@@ -161,7 +161,7 @@ jobs:
           BRANCH: ${{ steps.commit.outputs.branch }}
         run: |
           # Push HEAD to the new branch on remote
-          git push https://x-access-token:${GH_TOKEN}@github.com/OWNER/REPO.git HEAD:$BRANCH
+          git push https://x-access-token:${{ secrets.GH_TOKEN }}@github.com/${{ github.repository }} HEAD:$BRANCH
 
       - name: Create Pull Request
         if: steps.git-check.outputs.changed == 'true'
