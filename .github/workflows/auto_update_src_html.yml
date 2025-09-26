@@ -160,11 +160,8 @@ jobs:
           GH_TOKEN: ${{ secrets.GH_TOKEN_BOT }}
           BRANCH: ${{ steps.commit.outputs.branch }}
         run: |
-          # Set origin to use PAT
-          git remote set-url origin https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}
-
           # Push HEAD to the new branch on remote
-          git push origin HEAD:$BRANCH
+          git push https://x-access-token:${GH_TOKEN}@github.com/OWNER/REPO.git HEAD:$BRANCH
 
       - name: Create Pull Request
         if: steps.git-check.outputs.changed == 'true'
