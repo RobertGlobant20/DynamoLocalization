@@ -158,7 +158,6 @@ jobs:
         if: steps.git-check.outputs.changed == 'true'
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN_BOT }}
-          BRANCH: ${{ steps.commit.outputs.branch }}
         run: |
           # Push HEAD to the new branch on remote
           git push origin HEAD:$BRANCH
@@ -166,11 +165,9 @@ jobs:
       - name: Create Pull Request
         if: steps.git-check.outputs.changed == 'true'
         uses: peter-evans/create-pull-request@v7
-        env:
-          BRANCH: ${{ steps.commit.outputs.branch }}
         with:
           token: ${{ secrets.GH_TOKEN_BOT }}
-          branch: ${{ env.BRANCH }}
+          branch: $BRANCH
           base: ${{ env.MAIN_BRANCH }}
           title: "Documentation Automated PR from branch ${{ env.BRANCH }}"
           body: "This PR contains automated changes generated due to changes in doc/distrib/html subfolders"
