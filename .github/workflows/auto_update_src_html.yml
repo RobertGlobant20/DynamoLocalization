@@ -160,7 +160,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GH_TOKEN_BOT }}
           BRANCH: ${{ steps.commit.outputs.branch }}
         run: |
-          git push https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }} HEAD:$BRANCH
+          git push https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }} $BRANCH:$MAIN_BRANCH
 
       - name: Create Pull Request
         if: steps.git-check.outputs.changed == 'true'
@@ -170,6 +170,6 @@ jobs:
         with:
           token: ${{ secrets.GH_TOKEN_BOT }}
           branch: ${{ env.BRANCH }}
-          base: main
+          base: $MAIN_BRANCH
           title: "Documentation Automated PR from branch ${{ env.BRANCH }}"
           body: "This PR contains automated changes generated due to changes in doc/distrib/html subfolders"
