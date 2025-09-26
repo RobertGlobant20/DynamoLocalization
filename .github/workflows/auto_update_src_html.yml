@@ -136,7 +136,7 @@ jobs:
       - name: Commit changes
         id: commit
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN_BOT }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN_BOT }}
         if: steps.git-check.outputs.changed == 'true'
         run: |
           set -e
@@ -158,7 +158,7 @@ jobs:
       # Create PR using GitHub CLI
       - name: Create Pull Request
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN_BOT }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN_BOT }}
         if: steps.git-check.outputs.changed == 'true'
         run: |
           # Get the branch name from previous step
