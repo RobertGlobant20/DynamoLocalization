@@ -166,6 +166,7 @@ jobs:
       - name: Fetch branch so origin/<branch> exists
         run: |
           git fetch origin ${{ steps.commit.outputs.branch }}
+          git checkout -b ${{ steps.commit.outputs.branch }} origin/${{ steps.commit.outputs.branch }}
         
       - name: Create Pull Request
         if: steps.git-check.outputs.changed == 'true'
