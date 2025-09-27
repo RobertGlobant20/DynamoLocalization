@@ -153,6 +153,16 @@ jobs:
           git checkout -b $BRANCH
           git add src/**/*.html
           git commit -m "Automated changes"
+          
+      - name: Show branch and changes
+        run: |
+          echo "Current branch: $(git branch --show-current)"
+          echo ""
+          echo "Changed files (unstaged and staged):"
+          git diff --name-status HEAD
+          echo ""
+          echo "Detailed changes (unstaged):"
+          git diff
 
       - name: Push branch to remote
         run: |
