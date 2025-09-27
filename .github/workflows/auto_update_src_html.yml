@@ -154,6 +154,9 @@ jobs:
           git add src/**/*.html
           git commit -m "Automated changes"
 
+      - name: Print current branch
+        run: git branch --show-current
+        
       - name: Create Pull Request
         if: steps.git-check.outputs.changed == 'true'
         uses: peter-evans/create-pull-request@v7
