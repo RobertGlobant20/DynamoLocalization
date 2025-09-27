@@ -166,14 +166,16 @@ jobs:
       - name: Fetch branch so origin/<branch> exists
         run: |
           git fetch origin ${{ steps.commit.outputs.branch }}
-          git checkout -b ${{ steps.commit.outputs.branch }} origin/${{ steps.commit.outputs.branch }}
         
-      - name: Create Pull Request
-        if: steps.git-check.outputs.changed == 'true'
-        uses: peter-evans/create-pull-request@v7
-        with:
-          token: ${{ secrets.GH_TOKEN_BOT }}
-          branch: ${{ steps.commit.outputs.branch }}
-          base: ${{ env.MAIN_BRANCH }}
-          title: "Documentation Automated PR from branch ${{ steps.commit.outputs.branch }}"
-          body: "This PR contains automated changes generated due to changes in doc/distrib/html subfolders"
+       - name: Create Pull Request
+         env:
+           GH_TOKEN: ${{ secrets.GH_TOKEN_BOT }}
+         if: steps.git-check.outputs.changed == 'true'
+         run: |
+            # Get the branch name from previous step
+            BRANCH="${{ steps.commit.outputs.branch }}"
+          
+            gh pr create --title "Documentation Automated Update" \
+                         --body "This PR contains automated changes generated due to changes in doc/distrib/html subfolders" \
+                         --base $MAIN_BRANCH \
+                         --head $BRANCH
