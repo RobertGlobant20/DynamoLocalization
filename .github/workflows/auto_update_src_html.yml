@@ -154,8 +154,9 @@ jobs:
           git add src/**/*.html
           git commit -m "Automated changes"
 
-      - name: Print current branch
-        run: git branch --show-current
+      - name: Push branch to remote
+        run: |
+          git push https://x-access-token:${{ secrets.GH_TOKEN_BOT }}@github.com/${{ github.repository }} HEAD:${{ steps.commit.outputs.branch }}
         
       - name: Create Pull Request
         if: steps.git-check.outputs.changed == 'true'
