@@ -156,13 +156,8 @@ jobs:
           
       - name: Show branch and changes
         run: |
-          echo "Current branch: $(git branch --show-current)"
-          echo ""
-          echo "Changed files (unstaged and staged):"
-          git diff --name-status HEAD
-          echo ""
-          echo "Detailed changes (unstaged):"
-          git diff
+          echo "Changed files:"
+          git show --name-status HEAD
 
       - name: Push branch to remote
         run: |
