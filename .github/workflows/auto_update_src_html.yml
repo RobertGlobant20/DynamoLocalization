@@ -153,19 +153,7 @@ jobs:
           git checkout -b $BRANCH
           git add src/**/*.html
           git commit -m "Automated changes"
-          
-      - name: Show branch and changes
-        run: |
-          echo "Changed files:"
-          git show --name-status HEAD
-
-      - name: Push branch to remote
-        run: |
-          git push https://x-access-token:${{ secrets.GH_TOKEN_BOT }}@github.com/${{ github.repository }} HEAD:${{ steps.commit.outputs.branch }}
-          
-      - name: Fetch branch so origin/<branch> exists
-        run: |
-          git fetch origin ${{ steps.commit.outputs.branch }}
+          git push -u origin $BRANCH             
         
       - name: Create Pull Request
         env:
